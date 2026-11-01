@@ -23,6 +23,7 @@
 - `SKILL.md` 带 UTF-8 BOM（如 Windows 记事本 / PowerShell 5.1 保存）时不再丢失 YAML frontmatter；技能路由改为复用统一的 `parse_frontmatter`（#2215）
 - `OCTOP_HOME` 迁移数据目录后，首次配置向导密码文件随之写入 `<OCTOP_HOME>/octop-login.txt`；旧位置 `~/octop-login.txt` 自动继承，不再生成冲突密码（#2171）
 - ragflow 连接器支持配置服务地址、API Key 与默认知识库 ID，专家可列出知识库、检索片段和分页读取文档，凭证沿用加密存储（#2308）
+- PostgreSQL 控制面下批量写入不再报 `'Connection' object has no attribute 'executemany'`：连接适配层补齐 `executemany`，主动关怀的去重记录、知识库切片与历史正文引用得以正常落库（#2725）
 
 ### 修复
 - 反向代理通过独立转发端口传递公网地址时，钉钉等登录方式的回调地址会保留非默认端口，避免域名访问时丢失端口导致登录失败。
