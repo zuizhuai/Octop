@@ -106,3 +106,12 @@ export function loadAppearanceOnBoot(): StoredAppearance {
   writeStoredAppearance(appearance);
   return appearance;
 }
+
+/**
+ * Drop the persisted appearance so the next account on this browser starts
+ * from the defaults instead of inheriting the previous user's theme.
+ */
+export function clearStoredAppearance(): void {
+  localStorage.removeItem(THEME_STORAGE_KEY);
+  localStorage.removeItem(LEGACY_PALETTE_STORAGE_KEY);
+}

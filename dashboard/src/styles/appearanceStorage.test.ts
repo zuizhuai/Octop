@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  clearStoredAppearance,
   loadAppearanceOnBoot,
   readStoredAppearance,
   writeStoredAppearance,
@@ -112,6 +113,18 @@ describe("appearanceStorage", () => {
       THEME_STORAGE_KEY,
       JSON.stringify({ preference: "neon", palette: "pink" }),
     );
+    expect(readStoredAppearance().preference).toBe("system");
+    expect(readStoredAppearance().palette).toBe(DEFAULT_PALETTE);
+  });
+
+  it("clearStoredAppearance drops both keys so the next user starts fresh", () => {
+    writeStoredAppearance({ preference: "dark", palette: "amber" });
+    localStorage.setItem(LEGACY_PALETTE_STORAGE_KEY, "tech");
+
+    clearStoredAppearance();
+
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(LEGACY_PALETTE_STORAGE_KEY)).toBeNull();
     expect(readStoredAppearance().preference).toBe("system");
     expect(readStoredAppearance().palette).toBe(DEFAULT_PALETTE);
   });

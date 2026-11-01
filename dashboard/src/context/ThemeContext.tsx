@@ -7,11 +7,13 @@ import {
   type ReactNode,
 } from "react";
 import {
+  clearStoredAppearance,
   loadAppearanceOnBoot,
   writeStoredAppearance,
   type ThemePreference,
 } from "../styles/appearanceStorage";
 import {
+  DEFAULT_CUSTOM_COLOR,
   DEFAULT_PALETTE,
   customPaletteCssVars,
   normalizeHexColor,
@@ -41,6 +43,8 @@ interface ThemeContextValue {
   setCustomColor: (hex: string) => void;
   /** Legacy toggle kept for backward compat (cycles light/dark) */
   toggle: () => void;
+  /** Drop the persisted preference and go back to the defaults (session end) */
+  resetAppearance: () => void;
   /** Whether the current mode is considered "dark" for Ant Design */
   isDark: boolean;
 }
@@ -54,6 +58,7 @@ const ThemeContext = createContext<ThemeContextValue>({
   customColor: "",
   setCustomColor: () => {},
   toggle: () => {},
+  resetAppearance: () => {},
   isDark: false,
 });
 
@@ -173,6 +178,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     });
   }, [mode]);
 
+  const resetAppearance = useCallback(() => {
+    clearStoredAppearance();
+    setPreferenceState("system");
+    setPaletteState(DEFAULT_PALETTE);
+    setCustomColorState(DEFAULT_CUSTOM_COLOR);
+  }, []);
+
   return (
     <ThemeContext.Provider
       value={{
@@ -184,6 +196,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         customColor,
         setCustomColor,
         toggle,
+        resetAppearance,
         isDark: isDarkMode(mode),
       }}
     >

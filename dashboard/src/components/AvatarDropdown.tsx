@@ -44,6 +44,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import PaletteSwitcher from "./PaletteSwitcher";
 import type { OctopUser } from "../api/modules/auth";
 import { useLayoutMode } from "../context/LayoutModeContext";
+import { useTheme } from "../context/ThemeContext";
 import type { LayoutMode } from "../layouts/layoutModeStorage";
 import { userCan } from "../utils/permissions";
 import feishuIcon from "../assets/channels/feishu.svg";
@@ -106,6 +107,7 @@ export default function AvatarDropdown({
   const role = useUserRole();
   const isMobile = useIsMobile();
   const { layoutMode, setLayoutMode } = useLayoutMode();
+  const { resetAppearance } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
@@ -126,9 +128,10 @@ export default function AvatarDropdown({
     setMenuOpen(false);
     await authApi.logout();
     clearAuthToken();
+    resetAppearance();
     await applyGuestLocale();
     navigate("/login", { replace: true });
-  }, [navigate]);
+  }, [navigate, resetAppearance]);
 
   const handleSaveProfile = async (values: { display_name: string }) => {
     setSaving(true);
